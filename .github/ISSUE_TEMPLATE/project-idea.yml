@@ -1,0 +1,82 @@
+name: Project idea
+description: Propose the team's product idea with a first scale estimate (Class 1 homework).
+title: "[Idea] "
+labels: ["proposal"]
+assignees: ["Lazyb0y"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue per team. The instructor approves the idea or asks for changes in the comments.
+        Rules: an MVP of 5 to 8 user stories, at least 2 user roles, at least 5 related entities, at least 2 business rules with real logic, and at least 1 external API.
+  - type: input
+    id: name
+    attributes:
+      label: Product name
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where does the idea come from?
+      options:
+        - "Our own idea"
+        - "A suggested course idea (name it below)"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who has the problem, how they cope today, and why that is not good enough.
+    validations:
+      required: true
+  - type: textarea
+    id: roles
+    attributes:
+      label: Users and roles (at least 2)
+      placeholder: |
+        - Student: posts and searches lost items
+        - Moderator: approves posts and resolves claims
+    validations:
+      required: true
+  - type: textarea
+    id: stories
+    attributes:
+      label: MVP stories (5 to 8, one line each)
+      placeholder: "As a student, I want to ..., so that ..."
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: Business rules (at least 2) and main entities (at least 5)
+      description: Rules that need real, testable logic, such as capacity limits, time windows, prices or approvals.
+    validations:
+      required: true
+  - type: input
+    id: api
+    attributes:
+      label: External API and what the product uses it for
+      description: Check that a free or sandbox tier exists.
+    validations:
+      required: true
+  - type: textarea
+    id: estimate
+    attributes:
+      label: First scale estimate (show your working)
+      description: Back-of-the-envelope numbers from Class 1. Round freely; the working matters more than the answer.
+      value: |
+        - Total users after one year:
+        - Daily active users:
+        - Peak requests per second (reads / writes):
+        - Storage after one year (records x bytes per record):
+        - What these numbers mean for our design:
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Biggest risk (50 words or fewer)
+    validations:
+      required: true

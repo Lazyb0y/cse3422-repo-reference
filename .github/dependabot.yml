@@ -1,0 +1,38 @@
+# Dependabot opens pull requests for outdated dependencies every week.
+# Uncomment the block for your stack and set its directory once your code exists (Class 7 explains this file).
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # - package-ecosystem: "maven"     # Java with Maven
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"
+
+  # - package-ecosystem: "gradle"    # Java or Kotlin with Gradle
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"
+
+  # - package-ecosystem: "npm"       # JavaScript / TypeScript
+  #   directory: "/frontend"
+  #   schedule:
+  #     interval: "weekly"
+
+  # - package-ecosystem: "pip"       # Python
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"
+
+  # - package-ecosystem: "composer"  # PHP / Laravel
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"
+
+  # - package-ecosystem: "nuget"     # C# / .NET
+  #   directory: "/backend"
+  #   schedule:
+  #     interval: "weekly"

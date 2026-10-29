@@ -1,0 +1,7 @@
+# Who reviews what. Replace the handles with your team's and remove the leading "#".
+# Code owners are asked for review automatically when a pull request touches their files.
+#
+# *              @member-one @member-two
+# /frontend/     @member-one
+# /backend/      @member-two
+# /docs/         @member-one @member-two

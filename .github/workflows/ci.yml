@@ -1,0 +1,192 @@
+# CI runs on every pull request and every push to main. The three jobs are required checks:
+#   pr-title  the pull request title starts with a Jira key ("KEY-12: summary")
+#   secrets   no passwords, keys or tokens anywhere in the history (gitleaks)
+#   build     builds and tests every app it finds (Maven, Gradle, npm, Python, PHP/Composer, .NET),
+#             whether the repo holds one app or frontend/ and backend/ side by side
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title:
+    name: pr-title
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Title starts with a Jira key
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$TITLE" =~ ^[A-Z][A-Z0-9]+-[0-9]+:\ .+ ]]; then
+            echo "Title OK: $TITLE"
+          else
+            echo "::error title=Pull request title::Start the title with the Jira key, e.g. 'KAN-12: add login form'. Got: '$TITLE'"
+            exit 1
+          fi
+
+  secrets:
+    name: secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan the full history for secrets (gitleaks)
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.18.4 detect --source=/repo --redact --verbose
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find the apps in this repository
+        id: find
+        run: |
+          # Directories that hold a build file, keeping only the top-most ones (a multi-module build runs once).
+          find_dirs() {
+            git ls-files -- "$@" | grep -v '/node_modules/' | xargs -r -n1 dirname | sort -u > /tmp/all || true
+            while read -r d; do
+              keep=1
+              while read -r e; do
+                if [ "$d" != "$e" ] && { [ "$e" = "." ] || [[ "$d" == "$e/"* ]]; }; then keep=0; fi
+              done < /tmp/all
+              [ "$keep" = 1 ] && printf '%s ' "$d"
+            done < /tmp/all
+          }
+          {
+            echo "maven=$(find_dirs '*pom.xml')"
+            echo "gradle=$(find_dirs '*build.gradle' '*build.gradle.kts')"
+            echo "node=$(find_dirs '*package.json')"
+            echo "python=$(find_dirs '*requirements.txt' '*pyproject.toml')"
+            echo "php=$(find_dirs '*composer.json')"
+            echo "dotnet=$(find_dirs '*.sln')"
+          } >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+      - name: No application code yet
+        if: steps.find.outputs.maven == '' && steps.find.outputs.gradle == '' && steps.find.outputs.node == '' && steps.find.outputs.python == '' && steps.find.outputs.php == '' && steps.find.outputs.dotnet == ''
+        run: echo "::notice title=No app yet::No build file found. Add your frontend and backend and this job will build and test them."
+
+      - name: Set up Java
+        if: steps.find.outputs.maven != '' || steps.find.outputs.gradle != ''
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Build and test (Maven)
+        if: steps.find.outputs.maven != ''
+        env:
+          DIRS: ${{ steps.find.outputs.maven }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::Maven: $d"
+            if [ -f "$d/mvnw" ]; then (cd "$d" && chmod +x mvnw && ./mvnw -B -ntp verify); else (cd "$d" && mvn -B -ntp verify); fi
+            echo "::endgroup::"
+          done
+
+      - name: Build and test (Gradle)
+        if: steps.find.outputs.gradle != ''
+        env:
+          DIRS: ${{ steps.find.outputs.gradle }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::Gradle: $d"
+            if [ -f "$d/gradlew" ]; then (cd "$d" && chmod +x gradlew && ./gradlew build --no-daemon); else (cd "$d" && gradle build --no-daemon); fi
+            echo "::endgroup::"
+          done
+
+      - name: Set up Node.js
+        if: steps.find.outputs.node != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build and test (npm)
+        if: steps.find.outputs.node != ''
+        env:
+          DIRS: ${{ steps.find.outputs.node }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::npm: $d"
+            (cd "$d" && if [ -f package-lock.json ]; then npm ci; else npm install; fi \
+              && npm run lint --if-present && npm test --if-present && npm run build --if-present)
+            echo "::endgroup::"
+          done
+
+      - name: Set up Python
+        if: steps.find.outputs.python != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build and test (Python)
+        if: steps.find.outputs.python != ''
+        env:
+          DIRS: ${{ steps.find.outputs.python }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::Python: $d"
+            (cd "$d" && python -m pip install --upgrade pip \
+              && if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install .; fi \
+              && pip install pytest \
+              && { python -m pytest || [ $? -eq 5 ]; })   # exit code 5 = no tests collected yet
+            echo "::endgroup::"
+          done
+
+      - name: Set up PHP
+        if: steps.find.outputs.php != ''
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+
+      - name: Build and test (PHP / Composer)
+        if: steps.find.outputs.php != ''
+        env:
+          DIRS: ${{ steps.find.outputs.php }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::Composer: $d"
+            (
+              cd "$d"
+              composer install --no-interaction --prefer-dist
+              if [ -f artisan ]; then
+                [ -f .env ] || cp .env.example .env
+                php artisan key:generate --force
+                php artisan test
+              elif [ -x vendor/bin/phpunit ]; then
+                vendor/bin/phpunit
+              else
+                echo "No PHP test runner found"
+              fi
+            )
+            echo "::endgroup::"
+          done
+
+      - name: Set up .NET
+        if: steps.find.outputs.dotnet != ''
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build and test (.NET)
+        if: steps.find.outputs.dotnet != ''
+        env:
+          DIRS: ${{ steps.find.outputs.dotnet }}
+        run: |
+          for d in $DIRS; do
+            echo "::group::.NET: $d"
+            (cd "$d" && dotnet test)
+            echo "::endgroup::"
+          done

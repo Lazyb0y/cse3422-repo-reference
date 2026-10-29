@@ -1,0 +1,57 @@
+name: Help request
+description: Ask the instructor for help. This is the only channel for project help.
+title: "[Help] "
+labels: ["help"]
+assignees: ["Lazyb0y"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before asking: read the error, search for it,
+        check the handouts and ask your team.
+        Never paste passwords, API keys or tokens.
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: The outcome you want, not the error.
+      placeholder: Connect the backend to MySQL running in Docker.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Steps, commands and what each one did.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Error message or logs
+      description: Paste the exact text. Screenshots only when there is no text.
+      render: shell
+  - type: input
+    id: where
+    attributes:
+      label: Branch, commit or pull request link
+      placeholder: https://github.com/OWNER/REPO/pull/12
+    validations:
+      required: true
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: How blocked are you?
+      options:
+        - "Blocked: we cannot continue"
+        - "Slowed down: we have a workaround"
+        - "Question: not blocking"
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Check before sending
+      options:
+        - label: I removed passwords, keys, tokens and personal data.
+          required: true

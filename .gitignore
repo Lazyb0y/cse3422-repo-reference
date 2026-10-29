@@ -1,0 +1,48 @@
+# Secrets and local configuration (commit .env.example instead)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+*.swp
+
+# Java (Maven, Gradle)
+target/
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# JavaScript / TypeScript
+node_modules/
+dist/
+.next/
+coverage/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# PHP / Laravel
+vendor/
+storage/*.key
+
+# .NET
+bin/
+obj/
+
+# Logs and local databases
+*.log
+*.sqlite
+*.db

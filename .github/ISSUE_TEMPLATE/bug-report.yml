@@ -1,0 +1,40 @@
+name: Bug report
+description: Something in the product does not work as specified.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Sign in as a student
+        2. Open "My items"
+        3. Click "Resolve"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: Quote the acceptance criterion if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Include the exact error text or a screenshot.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Local or deployed? Which commit, browser or device?
+  - type: input
+    id: jira
+    attributes:
+      label: Jira key
+      description: Link the bug to its Jira issue so the fix can reference it.
+      placeholder: KEY-42
