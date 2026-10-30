@@ -2,6 +2,8 @@
 
 **Written by:** @handle · **Sprint goal:** …
 
+> Replace `KEY` with your Jira project key (e.g. `ORB-12`); `#14` is a pull request number. Delete this note in your report.
+
 ## Done this week
 
 - KEY-12: login form with validation (#14)
