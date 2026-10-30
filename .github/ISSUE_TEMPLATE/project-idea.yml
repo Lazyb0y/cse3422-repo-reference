@@ -24,6 +24,12 @@ body:
         - "A suggested course idea (name it below)"
     validations:
       required: true
+  - type: input
+    id: suggested
+    attributes:
+      label: Which suggested idea?
+      description: Only if you chose a suggested course idea. Its number and name from the project handout.
+      placeholder: "P1 Campus Lost & Found"
   - type: textarea
     id: problem
     attributes:

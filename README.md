@@ -9,8 +9,7 @@ The **finished state** every team repository reaches by the end of the term: one
 | Practice | Files and settings in this repository | Taught in |
 |---|---|---|
 | Repository from a template, collaborators | (repository settings) | Class 1 |
-| Help-request issue form | `.github/ISSUE_TEMPLATE/help-request.yml` | Class 1 |
-| Project-idea issue form, bug-report form, issue settings | `.github/ISSUE_TEMPLATE/project-idea.yml`, `bug-report.yml`, `config.yml` | Class 1 (idea), Class 3 (others) |
+| Issue forms (help request, project idea, bug report) and issue settings | `.github/ISSUE_TEMPLATE/help-request.yml`, `project-idea.yml`, `bug-report.yml`, `config.yml` | Class 1 |
 | Team contract and first pull request | `docs/team-contract.md` | Class 1 |
 | Living specification | `docs/specification.md` | Class 2 |
 | Licence | `LICENSE` | Class 2 |
