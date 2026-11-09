@@ -22,6 +22,7 @@ Every member writes code. Roles say who leads an area, not who does all of it.
 
 ## Meeting rhythm
 
+- Sprint length: … (1 or 2 weeks; the Jira sprints follow it)
 - Weekly planning: day and time …, about 30 minutes, online or in person
 - Short check-ins: … (e.g., Monday and Thursday, 10 minutes)
 - Weekly status report in `reports/YYYY-MM-DD.md`, written by: … (rotates weekly)
