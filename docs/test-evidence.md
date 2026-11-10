@@ -1,6 +1,6 @@
 # Test evidence
 
-> From Class 7. Shows what is tested and the latest results; keep it current at every milestone.
+> From Class 6. Shows what is tested and the latest results; keep it current at every milestone.
 
 ## How to run the tests
 
