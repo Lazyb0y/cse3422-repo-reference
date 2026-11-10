@@ -22,7 +22,7 @@ The **finished state** every team repository reaches by the end of the term: one
 | Dependency updates | `.github/dependabot.yml` | Class 7 |
 | Secret scanning with push protection | Settings → Code security | Class 7 |
 | Postman API tests | `api-tests/` | Class 7 |
-| Test evidence | `docs/test-evidence.md` | Class 7 |
+| Test evidence | `docs/test-evidence.md` | Class 6 |
 | Releases, semantic versioning, changelog | `CHANGELOG.md`, release tags | Class 8 |
 | Usability report | `docs/usability.md` | Class 9 |
 | CodeQL, security policy, private vulnerability reporting | `SECURITY.md`; Settings → Code security | Class 10 |
